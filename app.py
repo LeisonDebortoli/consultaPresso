@@ -7,7 +7,7 @@ CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
 # Dados do ARC Raiders
 GAME_STEAM_ID = "1808500" 
-PRECO_ALVO_CENTAVOS = 17180  # R$ 171,80 em centavos
+PRECO_ALVO_CENTAVOS = 17180  # Referência do preço atual R$ 171,80
 
 def enviar_mensagem(texto):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
@@ -33,21 +33,21 @@ def verificar_preco():
                 preco_formatado = data['price_overview']['final_formatted']
                 titulo = data['name']
                 
-                print(f"Relatório 12h: {titulo} está custando {preco_formatado}")
-
-                # Verifica se houve queda de preço
+                # Lógica de comparação para o ícone
                 if preco_final < PRECO_ALVO_CENTAVOS:
-                    msg = (f"📉 *PROMOÇÃO DETECTADA!*\n\n"
-                           f"🎮 *Jogo:* {titulo}\n"
-                           f"💰 *Preço:* {preco_formatado}\n"
-                           f"🔗 [Ver na Steam](https://store.steampowered.com/app/{GAME_STEAM_ID})")
-                    enviar_mensagem(msg)
+                    status = "📉 *PROMOÇÃO DETECTADA!*"
                 else:
-                    # Opcional: Avisar que o preço continua o mesmo (para você saber que o bot rodou)
-                    # enviar_mensagem(f"ℹ️ Check diário: {titulo} continua {preco_formatado}.")
-                    pass
+                    status = "ℹ️ *Relatório Diário de Preço*"
+
+                msg = (f"{status}\n\n"
+                       f"🎮 *Jogo:* {titulo}\n"
+                       f"💰 *Preço Atual:* {preco_formatado}\n"
+                       f"🔗 [Ver na Steam](https://store.steampowered.com/app/{GAME_STEAM_ID})")
+                
+                enviar_mensagem(msg)
+                print(f"Mensagem enviada: {titulo} - {preco_formatado}")
             else:
-                print("Jogo sem informações de preço no momento.")
+                enviar_mensagem(f"⚠️ *Aviso:* O jogo ARC Raiders está sem preço visível na API da Steam no momento.")
         else:
             print("Falha ao consultar a API da Steam.")
             
