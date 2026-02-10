@@ -1,9 +1,9 @@
-name: Monitorar Preço Steam
+name: Monitorar Preço Steam e Epic
 on:
   schedule:
-    # 15:00 UTC equivale a 12:00 no Horário de Brasília
-    - cron: '0 15 * * *'
-  workflow_dispatch: # Permite que você rode manualmente para testar
+    # Roda a cada 6 horas (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   check-price:
@@ -22,7 +22,6 @@ jobs:
 
       - name: Rodar o monitor
         env:
-          # Conecta os Secrets do GitHub às variáveis do script
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python app.py
